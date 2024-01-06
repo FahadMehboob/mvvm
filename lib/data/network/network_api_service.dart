@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart';
 import 'package:mvvm/data/app_exceptions.dart';
 import 'package:mvvm/data/network/base_api_services.dart';
@@ -26,6 +25,7 @@ class NetworkApiService extends BaseApiServices {
     try {
       Response response = await post(Uri.parse(url), body: data)
           .timeout(const Duration(seconds: 10));
+      responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet Connection');
     }
