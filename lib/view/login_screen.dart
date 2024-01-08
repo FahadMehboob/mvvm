@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mvvm/utils/routes/routes_name.dart';
+import 'package:mvvm/utils/utils.dart';
 import 'package:mvvm/view/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,11 +22,13 @@ class _LoginScreenState extends State<LoginScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Center(
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, RoutesName.home);
-                  },
-                  child: const Text("Click Me"))),
+            child: InkWell(
+              onTap: () {
+                Utils.FlushBarErrorMessage("No nternet Connection", context);
+              },
+              child: const Text("Click Me"),
+            ),
+          ),
         ],
       ),
     );
