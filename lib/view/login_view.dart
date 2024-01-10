@@ -3,6 +3,8 @@ import 'package:mvvm/utils/routes/routes_name.dart';
 import 'package:mvvm/utils/utils.dart';
 import 'package:mvvm/view/home_screen.dart';
 
+import '../res/components/round_button.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -17,8 +19,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _obsecurePassword.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height * 1;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login Screen"),
@@ -52,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   hintText: "Password",
                   labelText: "Password",
-                  prefixIcon: Icon(Icons.lock_open_rounded),
+                  prefixIcon: const Icon(Icons.lock_open_rounded),
                   suffixIcon: InkWell(
                     onTap: () {
                       _obsecurePassword.value = !_obsecurePassword.value;
@@ -64,7 +78,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               );
             },
-          )
+          ),
+          SizedBox(
+            height: height * .085,
+          ),
+          RoundButton(
+            title: "Login",
+            onPress: () {
+              if (_emailController.text.isEmpty) {
+                Utils.FlushBarErrorMessage("Please Enter Email", context);
+              } else if (_passwordController.text.isEmpty) {
+                Utils.FlushBarErrorMessage("Please Enter Password", context);
+              } else if (_passwordController.text.length < 6) {
+                Utils.FlushBarErrorMessage(
+                    "Please Enter 6 digit Password", context);
+              } else {
+                Utils.FlushBarSuccessMessage("Login Successfully", context);
+              }
+            },
+          ),
         ],
       ),
     );
