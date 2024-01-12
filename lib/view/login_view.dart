@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mvvm/repository/auth_repository.dart';
 import 'package:mvvm/utils/routes/routes_name.dart';
 import 'package:mvvm/utils/utils.dart';
 import 'package:mvvm/view/home_screen.dart';
+import 'package:mvvm/view_model/auth_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../res/components/round_button.dart';
 
@@ -13,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> _obsecurePassword = ValueNotifier<bool>(true);
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -22,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    super.dispose();
     _obsecurePassword.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -32,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authViewMode = Provider.of<AuthViewModel>(context);
     final height = MediaQuery.of(context).size.height * 1;
     return Scaffold(
       appBar: AppBar(
@@ -84,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           RoundButton(
             title: "Login",
+            loading: authViewMode.loading,
             onPress: () {
               if (_emailController.text.isEmpty) {
                 Utils.FlushBarErrorMessage("Please Enter Email", context);
@@ -93,7 +98,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 Utils.FlushBarErrorMessage(
                     "Please Enter 6 digit Password", context);
               } else {
-                Utils.FlushBarSuccessMessage("Login Successfully", context);
+                Map data = {
+                  'email': _emailController.text.toString(),
+                  'password': _passwordController.text.toString(),
+                };
+                authViewMode.loginApi(data, context);
               }
             },
           ),
